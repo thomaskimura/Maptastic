@@ -8,8 +8,7 @@
       html, body, #map-canvas {
         height: 100%;
         margin: 0px;
-        padding: 0px
-      }
+        padding: 0px}
       #bar{
         text-align:center;
         width:100%;
@@ -17,17 +16,30 @@
         top:0px;
         z-index:10;}
       #csv-file{
-        font-size: 16px;}
+        font-size: 16px;
+        background: white;
+        padding: 10px;}
+      #pano{
+        position: absolute;
+        top: 50%;
+        left: 0;
+        width:100%;
+        height:50%;
+        display: none;}
+      .minimap{
+        height:50% !important;}
+      .bigmap{
+        height:100% !important;}
+
     </style>
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js" ></script>
     <script src="papaparse.min.js"></script>
     <script src="https://maps.googleapis.com/maps/api/js?v=3.exp"></script>
-    <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?libraries=places"></script>
 
 
 <script>
 var map;            // this is global
-path = new Array(); // so is this
+
 
 // declar styles
 var styles = [
@@ -84,13 +96,39 @@ function initialize() {
   };
   map = new google.maps.Map(document.getElementById('map-canvas'),mapOptions);
 
+    var panoramaOptions = {
+        enableCloseButton : true,
+        visible: false
+    };
+    var panorama = new  google.maps.StreetViewPanorama(document.getElementById("pano"), panoramaOptions);
+    map.setOptions({
+    streetView: panorama
+    });
+
   // on upload
   $("#csv-file").change(handleFileSelect);
+
+    // control streetview
+    google.maps.event.addListener(panorama, "visible_changed", function() {
+        if (panorama.getVisible() && $("#pano").is(':visible')){
+            //moving the pegman around the map
+        }else if(panorama.getVisible() && $("#pano").is(':hidden')){
+            $("#pano").show();
+            $("#map-canvas").removeClass('bigmap');
+            $("#map-canvas").addClass('minimap');
+        }
+        google.maps.event.addListener(panorama, "closeclick", function() {
+            $("#pano").hide();
+            $("#map-canvas").removeClass('minimap');
+            $("#map-canvas").addClass('bigmap');
+        });
+    });
 }
 
 // on upload function
 function handleFileSelect(evt) {
   var file = evt.target.files[0];
+  path = new Array(); // local variable to handleFileSelect
   Papa.parse(file, {
     header: true,
   	complete: function(results) {
@@ -105,12 +143,13 @@ function handleFileSelect(evt) {
         path.push(latlng);
 
         // marker
+        var note = results.data[i].Note;
         var search ='"'+'https://www.google.ca/maps/search/' + lat + ',' + lng + '"';
         var image = 'img/marker.png';
         var marker = new google.maps.Marker({
             position: latlng,
             icon: image,
-            html: time + "<br>Latitude:" + lat + "<br>Longitude:" + lng + '<br><a target="_blank" href=' + search + ">Search</a>"
+            html: note + "<br>" + time + "<br>Latitude:" + lat + "<br>Longitude:" + lng + '<br><a target="_blank" href=' + search + ">Search</a>"
         });
 
         // infowindow
@@ -157,5 +196,6 @@ google.maps.event.addDomListener(window, 'load', initialize);
       <input type="file" id="csv-file" name="files"/>
     </div>
     <div id="map-canvas"></div>
+    <div id="pano"></div>
   </body>
 </html>

@@ -1,5 +1,6 @@
 draw-map-path
 =============
+[Try](http://thomaskimura.github.io/draw-map-path/) it out. 
 
 Draw a path on Google Maps from a .csv file
 

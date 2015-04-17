@@ -1,4 +1,4 @@
-draw-map-path
+Draw a path on Google maps
 =============
 [Try](http://thomaskimura.github.io/draw-map-path/) it out. 
 

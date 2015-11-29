@@ -1,6 +1,6 @@
 Draw a path on Google maps
 =============
-Draw a path on Google Maps from a .csv file. [Try](http://thomaskimura.github.io/draw-map-path/) it out. 
+Draw a path on Google Maps from a .csv file. [Try](http://thomaskimura.github.io/Maptastic/) it out. 
 
 This is a small tool to visulize coordinates on a map. Upload a csv file to see it live. The first column is an optional timestamp. The second column is the latitude. The third column is the longitude. The final column is a optinal column to include a note. This can be used to display additonal text. 
 
